@@ -1,44 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import PropTypes from 'prop-types';
+import Spinner from '../layout/Spinner';
 
-export default class Clients extends Component {
+class Clients extends Component {
   render() {
-    const clients = [
-      {
-        id: 1,
-        firstName: 'Bob',
-        lastName: 'Smith',
-        email: 'bob@example.org',
-        phone: '0400 000 111',
-        balance: '30',
-      },
-      {
-        id: 2,
-        firstName: 'Karen',
-        lastName: 'Brown',
-        email: 'karen@example.org',
-        phone: '0400 111 000',
-        balance: '10',
-      },
-      {
-        id: 3,
-        firstName: 'Tom',
-        lastName: 'Winston',
-        email: 'tom@example.org',
-        phone: '0411 111 222',
-        balance: '50.25',
-      },
-    ];
-
-    if (clients) {
+    if (this.props.clients) {
       return (
         <div>
           <div className="row">
-            <div className="col-md-6">
-              <h2><i className="fas fa-users"></i>Clients</h2>
-            </div>
-            <div className="col-md-6">
-            </div>
+            <h2 className="col-md-12 text-center"><i className="fas fa-users"></i> Clients</h2>
           </div>
           <table className="table table-striped">
             <thead className="thead-inverse">
@@ -50,7 +24,7 @@ export default class Clients extends Component {
               </tr>
             </thead>
             <tbody>
-              {clients.map(client => (
+              {this.props.clients.map(client => (
                 <tr key={client.id}>
                   <td>{client.firstName} {client.lastName}</td>
                   <td>{client.lastName}</td>
@@ -62,9 +36,17 @@ export default class Clients extends Component {
               ))}
             </tbody>
           </table>
-        </div>
+        </div >
       );
     }
-    return <h1>Loading...</h1>;
+    return <Spinner />;
   }
 }
+
+const mapStateToProps = ({ firestore: { ordered: { clients } } }) => ({ clients });
+
+Clients.propTypes = {
+  clients: PropTypes.array,
+};
+
+export default compose(firestoreConnect(['clients']), connect(mapStateToProps))(Clients);
