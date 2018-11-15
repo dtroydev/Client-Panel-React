@@ -11,15 +11,19 @@ class Clients extends Component {
     totalOwed: 0,
   }
 
+  static formatBalance(balance) {
+    return parseFloat(balance).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   static getDerivedStateFromProps({ clients }, state) {
     if (clients === undefined) return state;
     const totalOwed = clients
-      .reduce((total, { balance }) => total + parseFloat(balance), 0)
-      .toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-    return { totalOwed };
+      .reduce((total, { balance }) => total + parseFloat(balance), 0);
+
+    return { totalOwed: Clients.formatBalance(totalOwed) };
   }
 
   render() {
@@ -51,7 +55,7 @@ class Clients extends Component {
                 <tr key={client.id}>
                   <td>{client.firstName} {client.lastName}</td>
                   <td>{client.email}</td>
-                  <td>${parseFloat(client.balance).toFixed(2)}</td>
+                  <td>${Clients.formatBalance(client.balance)}</td>
                   <td><Link to={`/client/${client.id}`} className="btn btn-secondary btn-sm">
                     <i className="fas fa-arrow-circle-right"></i>Details
                   </Link></td>
