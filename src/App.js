@@ -5,20 +5,22 @@ import { Provider } from 'react-redux';
 import Navbar from './components/layout/Navbar';
 import Dashboard from './components/layout/Dashboard';
 import AddClient from './components/clients/AddClient';
+import ClientDetails from './components/clients/ClientDetails';
 
 import store from './store';
 
-class App extends Component {
+export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Router>
+        <Router basename={`${process.env.PUBLIC_URL}/`}>
           <div className="App">
             <Navbar />
             <div className="container">
               <Switch>
                 <Route exact path="/" component={Dashboard} />
                 <Route exact path="/client/add" component={AddClient} />
+                <Route exact path="/client/:id" component={ClientDetails} />
                 {/* <Route exact path="/" component={Dashboard} /> */}
               </Switch>
             </div>
@@ -28,5 +30,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;

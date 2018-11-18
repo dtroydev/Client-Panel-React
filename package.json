@@ -2,7 +2,9 @@
   "name": "clientpanel",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://dtroydev.github.io/Client-Panel-React/",
   "dependencies": {
+    "classnames": "^2.2.6",
     "firebase": "^5.5.8",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",

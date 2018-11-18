@@ -1,6 +1,6 @@
 import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
-import { firestoreConnect } from 'react-redux-firebase';
+import { withFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 
 class AddClient extends Component {
@@ -134,4 +134,4 @@ AddClient.propTypes = {
   firestore: PropTypes.object.isRequired,
 };
 
-export default firestoreConnect()(AddClient);
+export default withFirestore(AddClient);

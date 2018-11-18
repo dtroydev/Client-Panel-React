@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import PropTypes from 'prop-types';
 import Spinner from '../layout/Spinner';
+import withData from '../db';
 
 class Clients extends Component {
   state = {
@@ -18,16 +15,16 @@ class Clients extends Component {
     });
   }
 
-  static getDerivedStateFromProps({ clients }, state) {
+  static getDerivedStateFromProps({ data: { ordered: { clients } } }, state) {
     if (clients === undefined) return state;
     const totalOwed = clients
       .reduce((total, { balance }) => total + parseFloat(balance), 0);
-
     return { totalOwed: Clients.formatBalance(totalOwed) };
   }
 
   render() {
-    const { clients } = this.props;
+    const { formatBalance } = Clients;
+    const { clients } = this.props.data.ordered;
     const { totalOwed } = this.state;
     if (clients) {
       return (
@@ -55,7 +52,7 @@ class Clients extends Component {
                 <tr key={client.id}>
                   <td>{client.firstName} {client.lastName}</td>
                   <td>{client.email}</td>
-                  <td>${Clients.formatBalance(client.balance)}</td>
+                  <td>${formatBalance(client.balance)}</td>
                   <td><Link to={`/client/${client.id}`} className="btn btn-secondary btn-sm">
                     <i className="fas fa-arrow-circle-right"></i>Details
                   </Link></td>
@@ -70,10 +67,4 @@ class Clients extends Component {
   }
 }
 
-const mapStateToProps = ({ firestore: { ordered: { clients } } }) => ({ clients });
-
-Clients.propTypes = {
-  clients: PropTypes.array,
-};
-
-export default compose(firestoreConnect(['clients']), connect(mapStateToProps))(Clients);
+export default withData(Clients, 'clients');
