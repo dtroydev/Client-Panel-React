@@ -7,8 +7,6 @@ class AddClient extends Component {
   constructor(props) {
     super(props);
     this.submitRef = createRef();
-    this.db = this.props.firestore;
-    this.redirect = this.props.history.push;
     this.state = {
       client: {
         firstName: '',
@@ -31,9 +29,11 @@ class AddClient extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     this.submitRef.current.innerHTML = 'Submitting...  <i class="fa fa-spinner fa-spin"></i>';
+    const { push: redirect } = this.props.history;
     const { client } = this.state;
+    const { firestore: db } = this.props;
     client.balance = client.balance || '0';
-    this.db.add({ collection: 'clients' }, client).then(() => this.redirect('/'));
+    db.add({ collection: 'clients' }, client).then(() => redirect('/'));
   }
 
   render() {

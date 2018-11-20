@@ -5,6 +5,44 @@ import Spinner from '../layout/Spinner';
 import withData from '../db';
 
 class ClientDetails extends Component {
+  static collection = 'clients';
+
+  state = {
+    balance: {
+      update: false,
+      amount: '',
+    },
+  };
+
+  onBalanceEdit = ({ target: { value: amount } }) => {
+    this.setState(prevState => ({
+      balance: {
+        ...prevState.balance,
+        amount,
+      },
+    }));
+  }
+
+  onBalanceSubmit = (e) => {
+    e.preventDefault();
+    const { collection } = ClientDetails;
+    const { amount } = this.state.balance;
+    const { update } = this.props.firestore;
+    const { id: doc } = this.client;
+    const balance = parseFloat(amount).toFixed(2);
+    const clientUpdate = { balance };
+    update({ collection, doc }, clientUpdate);
+  }
+
+  toggleBalanceView = () => {
+    this.setState(prevState => ({
+      balance: {
+        ...prevState.balance,
+        update: !prevState.balance.update,
+      },
+    }));
+  }
+
   get client() {
     const { data: { clients }, match: { params: { id } } } = this.props;
     const client = clients && clients[id];
@@ -21,7 +59,31 @@ class ClientDetails extends Component {
 
   render() {
     const { formatBalance } = ClientDetails;
-    const { client } = this;
+    const { onBalanceEdit, onBalanceSubmit } = this;
+
+    const {
+      client,
+      toggleBalanceView,
+      state: { balance: { update, amount } },
+    } = this;
+    let balanceForm = null;
+    if (update) {
+      balanceForm = (
+        <form onSubmit={onBalanceSubmit}>
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Set New Balance"
+              onChange={onBalanceEdit}
+              value={amount} />
+            <div className="input-group-append">
+              <input type="submit" name="" className="btn btn-outline-dark" />
+            </div>
+          </div>
+        </form>
+      );
+    }
     if (client) {
       return (
         <div>
@@ -54,13 +116,20 @@ class ClientDetails extends Component {
                 </div>
                 <div className="col-md-4 col-sm-6">
                   <h3 className="float-right">
-                    Balance: <span className={classNames({
-                    'text-danger': parseFloat(client.balance) > 0,
-                    'text-success': parseFloat(client.balance) === 0,
-                  })}>${formatBalance(client.balance)}</span>
+
+                    Balance: <span
+                      style={{ whiteSpace: 'nowrap' }}
+                      className={classNames({
+                        'text-danger': parseFloat(client.balance) > 0,
+                        'text-success': parseFloat(client.balance) === 0,
+                      })}>$ {formatBalance(client.balance)}</span>
+
+                    <small><a href="#!" onClick={toggleBalanceView}>
+                      <i className="fas fa-pencil-alt"></i>
+                    </a></small>
+                    {balanceForm}
                   </h3>
                 </div>
-                {/* TODO - balance form */}
               </div>
               <hr />
               <ul className="list-group">
@@ -78,4 +147,4 @@ class ClientDetails extends Component {
   }
 }
 
-export default withData(ClientDetails, 'clients');
+export default withData(ClientDetails, ClientDetails.collection);
