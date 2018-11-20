@@ -4,6 +4,8 @@ import { withFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 
 class AddClient extends Component {
+  static collection = 'clients';
+
   constructor(props) {
     super(props);
     this.submitRef = createRef();
@@ -31,9 +33,9 @@ class AddClient extends Component {
     this.submitRef.current.innerHTML = 'Submitting...  <i class="fa fa-spinner fa-spin"></i>';
     const { push: redirect } = this.props.history;
     const { client } = this.state;
-    const { firestore: db } = this.props;
+    const { firestore } = this.props;
     client.balance = client.balance || '0';
-    db.add({ collection: 'clients' }, client).then(() => redirect('/'));
+    firestore.add({ collection: AddClient.collection }, client).then(() => redirect('/'));
   }
 
   render() {

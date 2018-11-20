@@ -40,6 +40,12 @@ class ClientDetails extends Component {
     const balance = parseFloat(amount).toFixed(2);
     const clientUpdate = { balance };
     update({ collection, doc }, clientUpdate);
+    this.setState(prevState => ({
+      balance: {
+        ...prevState.balance,
+        update: false,
+      },
+    }));
   }
 
   toggleBalanceView = () => {
@@ -130,11 +136,12 @@ class ClientDetails extends Component {
                       className={classNames({
                         'text-danger': parseFloat(client.balance) > 0,
                         'text-success': parseFloat(client.balance) === 0,
-                      })}>$ {formatBalance(client.balance)}</span>
+                      })}>{`$ ${formatBalance(client.balance)} `}
 
-                    <small><a href="#!" onClick={toggleBalanceView}>
-                      <i className="fas fa-pencil-alt"></i>
-                    </a></small>
+                      <small><a href="#!" onClick={toggleBalanceView}>
+                        <i className="fas fa-pencil-alt"></i>
+                      </a></small>
+                    </span>
                     {balanceForm}
                   </h3>
                 </div>
