@@ -4,6 +4,8 @@ import Spinner from '../layout/Spinner';
 import withData from '../db';
 
 class Clients extends Component {
+  static collection = 'clients';
+
   state = {
     totalOwed: 0,
   }
@@ -67,4 +69,4 @@ class Clients extends Component {
   }
 }
 
-export default withData(Clients, 'clients');
+export default withData(Clients, Clients.collection);
