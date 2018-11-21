@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+// import arraySort from 'array-sort';
 import Spinner from '../layout/Spinner';
 import withData from '../db';
 
@@ -8,6 +9,7 @@ class Clients extends Component {
 
   state = {
     totalOwed: 0,
+    // alphabetized: { clients: null },
   }
 
   static formatBalance(balance) {
@@ -21,12 +23,18 @@ class Clients extends Component {
     if (clients === undefined) return state;
     const totalOwed = clients
       .reduce((total, { balance }) => total + parseFloat(balance), 0);
+    // const alphabetizedClients = arraySort(clients.slice(0), ['lastName', 'firstName']);
+    // return {
+    //   totalOwed: Clients.formatBalance(totalOwed),
+    //   alphabetized: { clients: alphabetizedClients },
+    // };
     return { totalOwed: Clients.formatBalance(totalOwed) };
   }
 
   render() {
     const { formatBalance } = Clients;
     const { clients } = this.props.data.ordered;
+    // const { clients } = this.state.alphabetized;
     const { totalOwed } = this.state;
     if (clients) {
       return (
