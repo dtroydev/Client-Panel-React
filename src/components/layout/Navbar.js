@@ -1,8 +1,28 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { withRouter, Link } from 'react-router-dom';
+import { withFirebase } from 'react-redux-firebase';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { actionTypes } from 'redux-firestore';
+import PropTypes from 'prop-types';
 
-export default class Navbar extends Component {
+class Navbar extends Component {
+  static propTypes = {
+    auth: PropTypes.object.isRequired,
+    firebase: PropTypes.object.isRequired,
+  }
+
+  onLogoutClick = () => {
+    this.props.firebase.logout()
+      .then(() => {
+        this.props.dispatch({ type: actionTypes.CLEAR_DATA }); // clear firestore redux data
+        this.props.history.push('/login/');
+      });
+  }
+
   render() {
+    const { uid: isLoggedIn, email } = this.props.auth;
+
     return (
       <nav className="navbar navbar-expand-md navbar-dark bg-primary mb -4">
         <div className="container">
@@ -17,16 +37,36 @@ export default class Navbar extends Component {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarMain">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to="/" className="nav-link">
-                  Dashboard
+            {isLoggedIn
+              && <Fragment>
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item">
+                    <Link to="/" className="nav-link">
+                      Dashboard
                 </Link>
-              </li>
-            </ul>
+                  </li>
+                </ul>
+                <ul className="navbar-nav ml-auto">
+                  <li className="nav-item">
+                    <Link to="#!" className="nav-link" onClick={this.onLogoutClick}>
+                      Logout
+                    </Link>
+                  </li>
+                  <li className="nav-item navbar-text font-italic">
+                    {email}
+                  </li>
+                </ul>
+              </Fragment>
+            }
           </div>
         </div>
       </nav >
     );
   }
 }
+
+const mapStateToProps = ({ firebase: { auth } }) => ({
+  auth,
+});
+
+export default compose(withRouter, withFirebase, connect(mapStateToProps))(Navbar);

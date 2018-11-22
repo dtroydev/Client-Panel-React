@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import Spinner from '../layout/Spinner';
@@ -7,12 +7,16 @@ import withData from '../db';
 class ClientDetails extends Component {
   static collection = 'clients';
 
-  state = {
-    balance: {
-      update: false,
-      amount: '',
-    },
-  };
+  constructor(props) {
+    super(props);
+    this.submitRef = createRef();
+    this.state = {
+      balance: {
+        update: false,
+        amount: '',
+      },
+    };
+  }
 
   onDeleteClick = (e) => {
     e.preventDefault();
@@ -33,19 +37,23 @@ class ClientDetails extends Component {
 
   onBalanceSubmit = (e) => {
     e.preventDefault();
+    this.submitRef.current.innerHTML = 'Submitting...  <i class="fa fa-spinner fa-spin"></i>';
+    this.submitRef.current.setAttribute('disabled', true);
     const { collection } = ClientDetails;
     const { amount } = this.state.balance;
     const { update } = this.props.firestore;
-    const { id: doc } = this.client;
-    const balance = parseFloat(amount).toFixed(2);
-    const clientUpdate = { balance };
-    update({ collection, doc }, clientUpdate);
-    this.setState(prevState => ({
-      balance: {
-        ...prevState.balance,
-        update: false,
-      },
-    }));
+    const { id: doc, originalBalance } = this.client;
+    const newBalance = parseFloat(amount || originalBalance).toFixed(2);
+    const clientUpdate = { balance: newBalance };
+    update({ collection, doc }, clientUpdate).then(() => {
+      this.setState(prevState => ({
+        balance: {
+          ...prevState.balance,
+          update: false,
+          amount: '',
+        },
+      }));
+    });
   }
 
   toggleBalanceView = () => {
@@ -92,7 +100,7 @@ class ClientDetails extends Component {
               onChange={onBalanceEdit}
               value={amount} />
             <div className="input-group-append">
-              <input type="submit" name="" className="btn btn-outline-dark" />
+              <button ref={this.submitRef} type="submit" className="btn btn-outline-dark">Submit</button>
             </div>
           </div>
         </form>

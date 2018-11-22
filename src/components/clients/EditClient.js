@@ -28,7 +28,10 @@ class EditClient extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
+
     this.submitRef.current.innerHTML = 'Updating...  <i class="fa fa-spinner fa-spin"></i>';
+    this.submitRef.current.setAttribute('disabled', true);
+
     const { collection } = EditClient;
     const { client } = this.state;
     const {

@@ -31,6 +31,7 @@ class AddClient extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     this.submitRef.current.innerHTML = 'Submitting...  <i class="fa fa-spinner fa-spin"></i>';
+    this.submitRef.current.setAttribute('disabled', true);
     const { push: redirect } = this.props.history;
     const { client } = this.state;
     const { firestore } = this.props;

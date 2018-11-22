@@ -23,8 +23,8 @@ const firestoreConfig = {
 
 // React Redux Configuration
 const rrfConfig = {
-  userProfile: 'users',
-  useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
+  // userProfile: 'users',
+  // useFirestoreForProfile: true, // Firestore for Profile instead of Realtime DB
 };
 
 // Firebase Initialisation
@@ -32,6 +32,18 @@ firebase.initializeApp(firebaseConfig);
 
 // Firestore Initialisation
 firebase.firestore().settings(firestoreConfig);
+
+// Firebase Auth Initialisation
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
+// Firebase Auth Listener (TESTING)
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log('Store - Auth Listener: User has signed in with UID:', user.uid);
+  } else {
+    console.log('Store - Auth Listener: No user is signed in');
+  }
+});
 
 // Firebase Enhancers Setup
 const createStoreWithFirebase = compose(
