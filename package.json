@@ -2,7 +2,6 @@
   "name": "clientpanel",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://dtroydev.github.io/Client-Panel-React/",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
     "array-sort": "^1.0.0",

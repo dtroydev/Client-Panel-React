@@ -16,7 +16,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Router basename={`${process.env.PUBLIC_URL}/`}>
+        <Router>
           <div className="App">
             <Navbar />
             <div className="container">
