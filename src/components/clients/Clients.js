@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import arraySort from 'array-sort';
+import escapeRe from 'escape-string-regexp';
 import Spinner from '../layout/Spinner';
 import withData from '../db';
 import ClientsList from './ClientsList';
@@ -9,20 +10,25 @@ class Clients extends Component {
 
   state = {
     totalOwed: 0,
-    alphabeticOrder: {
-      enabled: false,
-      data: { clients: null },
+    displayClients: null,
+    searchFilter: null,
+    sorting: {
+      alphabeticNames: false,
     },
   }
 
   alphabeticToggleHandler = (checked) => {
     this.setState(prevState => ({
       ...prevState,
-      alphabeticOrder: {
-        ...prevState.alphabeticOrder,
-        enabled: checked,
+      sorting: {
+        ...prevState.sorting,
+        alphabeticNames: checked,
       },
     }));
+  }
+
+  filterHandler = ({ target: { value } }) => {
+    this.setState({ searchFilter: value });
   }
 
   static formatBalance(balance) {
@@ -35,55 +41,50 @@ class Clients extends Component {
   static getDerivedStateFromProps({ data: { ordered: { clients } } }, state) {
     if (clients === undefined) return state;
 
-    const totalOwed = clients
-      .reduce((total, { balance }) => total + parseFloat(balance), 0);
+    const { sorting: { alphabeticNames }, searchFilter } = state;
 
-    const { alphabeticOrder } = state;
+    let displayClients = null;
+    let filteredClients = null;
 
-    let alphabeticClients = null;
-
-    if (alphabeticOrder.enabled) {
-      alphabeticClients = arraySort(clients.slice(0), ['firstName', 'lastName']);
+    if (searchFilter) {
+      const searchRe = RegExp(`${escapeRe(searchFilter).trim()}`, 'i');
+      filteredClients = clients.filter(({ firstName, lastName, email }) => (
+        firstName.match(searchRe) || lastName.match(searchRe) || email.match(searchRe)
+      ));
     }
+
+    // arraySort mutates, we do not want to mutate clients in props
+    // (which are mapped from redux in withData HOC)
+    if (alphabeticNames) {
+      displayClients = arraySort(filteredClients || clients.slice(0), ['firstName', 'lastName']);
+    } else {
+      displayClients = filteredClients || clients;
+    }
+
+    const totalOwed = Clients.formatBalance(
+      displayClients.reduce((total, { balance }) => total + parseFloat(balance), 0),
+    );
 
     return {
       ...state,
-      totalOwed: Clients.formatBalance(totalOwed),
-      alphabeticOrder: {
-        ...state.alphabeticOrder,
-        data: { clients: alphabeticClients },
-      },
+      totalOwed,
+      displayClients,
     };
   }
 
   render() {
-    const {
-      state: {
-        alphabeticOrder,
-        alphabeticOrder: {
-          data: {
-            clients: alphabeticClients,
-          },
-        },
-      },
-      props: {
-        data: {
-          ordered: {
-            clients,
-          },
-        },
-      },
-    } = this;
+    const { displayClients } = this.state;
 
     const clientsListProps = {
       formatBalance: Clients.formatBalance,
-      clients: alphabeticOrder.enabled ? alphabeticClients : clients,
+      clients: displayClients,
       totalOwed: this.state.totalOwed,
-      alphabeticOrder: this.state.alphabeticOrder,
+      alphabeticOrder: this.state.sorting.alphabeticNames,
       alphabeticToggleHandler: this.alphabeticToggleHandler,
+      filterHandler: this.filterHandler,
     };
 
-    if (clients) {
+    if (displayClients) {
       return (
         <ClientsList {...clientsListProps} />
       );
