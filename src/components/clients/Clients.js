@@ -43,7 +43,7 @@ class Clients extends Component {
             <div className="col-md-6">
               <h2><i className="fas fa-users"></i> Clients</h2>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-6 pt-2">
               <h5 className="text-right text-secondary">Total Owed: <span className="text-primary">${totalOwed}</span>
               </h5>
             </div>

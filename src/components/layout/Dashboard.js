@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 
 export default function Dashboard() {
   return (
-    <div className="row">
+    <div className="row mt-4">
       <div className="col-md-10">
         <Clients />
       </div>

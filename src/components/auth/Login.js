@@ -29,14 +29,52 @@ class Login extends Component {
     };
   }
 
+  componentDidMount() {
+    const {
+      formRef: { current: formElement },
+      emailRef: { current: emailElement },
+      props: {
+        history,
+        isLoggedIn,
+      },
+    } = this;
+
+    if (isLoggedIn) {
+      formElement.hidden = true;
+      setTimeout(() => { history.push('/'); }, 1000);
+      this.setState(prevState => ({
+        ...prevState,
+        alert: {
+          show: true,
+          type: 'success',
+          heading: '',
+          text: 'You\'re already logged in',
+        },
+      }));
+    }
+    emailElement.focus();
+  }
+
   onChange = ({ target: { name, value } }) => {
     this.setState(prevState => ({ login: { ...prevState.login, [name]: value } }));
   };
 
   onSubmit = (e) => {
     e.preventDefault();
-    const { firebase } = this.props;
-    const { login: { email, password } } = this.state;
+    const {
+      formRef: { current: formElement },
+      emailRef: { current: emailElement },
+      submitRef: { current: submitElement },
+      props: {
+        firebase,
+        history,
+      },
+      state: {
+        login: {
+          email, password,
+        },
+      },
+    } = this;
 
     this.setState(prevState => ({
       ...prevState,
@@ -44,7 +82,7 @@ class Login extends Component {
       submit: { text: 'Logging in...' },
     }));
 
-    this.submitRef.current.setAttribute('disabled', true);
+    submitElement.setAttribute('disabled', true);
 
     firebase.login({ email, password })
       .then(() => {
@@ -61,8 +99,8 @@ class Login extends Component {
             text: 'Successful Login',
           },
         }));
-        this.formRef.current.hidden = true;
-        setTimeout(() => { this.props.history.push('/'); }, 1000);
+        formElement.hidden = true;
+        setTimeout(() => { history.push('/'); }, 1000);
       })
       .catch(() => {
         this.setState(prevState => ({
@@ -81,14 +119,24 @@ class Login extends Component {
             text: 'Login',
           },
         }));
-        this.emailRef.current.focus();
-        this.submitRef.current.removeAttribute('disabled');
+        emailElement.focus();
+        submitElement.removeAttribute('disabled');
       });
   }
 
   render() {
-    const { login: { email, password }, alert, submit } = this.state;
-    const { onChange, onSubmit } = this;
+    const {
+      onChange,
+      onSubmit,
+      state: {
+        login: {
+          email,
+          password,
+        },
+        alert,
+        submit,
+      },
+    } = this;
 
     return (
       <div className="row">
