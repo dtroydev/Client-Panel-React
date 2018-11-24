@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { withFirebase } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { Alert } from 'react-bootstrap';
@@ -10,9 +10,9 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
-    this.emailRef = React.createRef();
-    this.submitRef = React.createRef();
-    this.formRef = React.createRef();
+    this.emailRef = createRef();
+    this.submitRef = createRef();
+    this.formRef = createRef();
     this.state = {
       login: {
         email: '',
@@ -126,6 +126,9 @@ class Login extends Component {
 
   render() {
     const {
+      formRef,
+      emailRef,
+      submitRef,
       onChange,
       onSubmit,
       state: {
@@ -152,7 +155,7 @@ class Login extends Component {
                   <p>{alert.text}</p>
                 </Alert>
               }
-              <form ref={this.formRef} onSubmit={onSubmit}>
+              <form ref={formRef} onSubmit={onSubmit}>
                 <div className="form-group">
                   <label className="pl-1" htmlFor="email">Email</label>
                   <input type="email"
@@ -162,7 +165,7 @@ class Login extends Component {
                     value={email}
                     placeholder="Enter your login email..."
                     required
-                    ref={this.emailRef}
+                    ref={emailRef}
                     onChange={onChange} />
                 </div>
                 <div className="form-group">
@@ -178,7 +181,7 @@ class Login extends Component {
                 </div>
                 <button type="submit"
                   className="btn btn-primary btn-block"
-                  ref={this.submitRef}
+                  ref={submitRef}
                 >{submit.text}</button>
               </form>
             </div>

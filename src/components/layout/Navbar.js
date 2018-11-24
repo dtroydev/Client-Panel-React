@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, createRef } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { withFirebase } from 'react-redux-firebase';
 import { connect } from 'react-redux';
@@ -12,15 +12,19 @@ class Navbar extends Component {
     firebase: PropTypes.object.isRequired,
   }
 
+  collapseRef = createRef();
+
   onLogoutClick = () => {
     this.props.firebase.logout()
       .then(() => {
+        this.collapseRef.current.classList.remove('show');
         this.props.dispatch({ type: actionTypes.CLEAR_DATA }); // clear firestore redux data
         this.props.history.push('/login/');
       });
   }
 
   render() {
+    const { collapseRef } = this;
     const { uid: isLoggedIn, email } = this.props.auth;
 
     return (
@@ -36,7 +40,7 @@ class Navbar extends Component {
             data-target="#navbarMain">
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarMain">
+          <div ref={collapseRef} className="collapse navbar-collapse" id="navbarMain">
             {isLoggedIn
               && <Fragment>
                 <ul className="navbar-nav mr-auto">
