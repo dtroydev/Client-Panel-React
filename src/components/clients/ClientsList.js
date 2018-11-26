@@ -46,7 +46,7 @@ export default function ClientsList(props) {
             <tr key={client.id}>
               <td>{client.firstName} {client.lastName}</td>
               <td>{client.email}</td>
-              <td>${formatBalance(client.balance)}</td>
+              <td className="text-right">${formatBalance(client.balance)}</td>
               <td><Link to={`/client/${client.id}`} className="btn btn-secondary btn-sm">
                 <i className="fas fa-arrow-circle-right"></i>Details
             </Link></td>
