@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import arraySort from 'array-sort';
 import escapeRe from 'escape-string-regexp';
+import commaNumber from 'comma-number';
 import Spinner from '../layout/Spinner';
 import withData from '../db';
 import ClientsList from './ClientsList';
@@ -32,10 +33,11 @@ class Clients extends Component {
   }
 
   static formatBalance(balance) {
-    return parseFloat(balance).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    return commaNumber(parseFloat(balance).toFixed(2));
+    // return parseFloat(balance).toLocaleString(undefined, {
+    //   minimumFractionDigits: 2,
+    //   maximumFractionDigits: 2,
+    // });
   }
 
   static getDerivedStateFromProps({ data: { ordered: { clients } } }, state) {
