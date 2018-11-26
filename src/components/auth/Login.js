@@ -42,21 +42,20 @@ class Login extends Component {
     if (isLoggedIn) {
       formElement.hidden = true;
       setTimeout(() => { history.push('/'); }, 1000);
-      this.setState(prevState => ({
-        ...prevState,
+      this.setState({
         alert: {
           show: true,
           type: 'success',
           heading: '',
           text: 'You\'re already logged in',
         },
-      }));
+      });
     }
     emailElement.focus();
   }
 
   onChange = ({ target: { name, value } }) => {
-    this.setState(prevState => ({ login: { ...prevState.login, [name]: value } }));
+    this.setState(({ login }) => ({ login: { ...login, [name]: value } }));
   };
 
   onSubmit = (e) => {
@@ -76,18 +75,16 @@ class Login extends Component {
       },
     } = this;
 
-    this.setState(prevState => ({
-      ...prevState,
+    this.setState({
       showAlert: false,
       submit: { text: 'Logging in...' },
-    }));
+    });
 
     submitElement.setAttribute('disabled', true);
 
     firebase.login({ email, password })
       .then(() => {
-        this.setState(prevState => ({
-          ...prevState,
+        this.setState({
           login: {
             email: '',
             password: '',
@@ -98,13 +95,12 @@ class Login extends Component {
             heading: '',
             text: 'Successful Login',
           },
-        }));
+        });
         formElement.hidden = true;
         setTimeout(() => { history.push('/'); }, 1000);
       })
       .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
+        this.setState({
           login: {
             email: '',
             password: '',
@@ -118,7 +114,7 @@ class Login extends Component {
           submit: {
             text: 'Login',
           },
-        }));
+        });
         emailElement.focus();
         submitElement.removeAttribute('disabled');
       });

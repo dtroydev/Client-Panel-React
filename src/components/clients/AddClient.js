@@ -21,11 +21,7 @@ class AddClient extends Component {
   }
 
   onChange = ({ target: { name, value } }) => {
-    this.setState((prevState) => {
-      const { client } = prevState;
-      client[name] = value;
-      return { client };
-    });
+    this.setState(({ client }) => ({ client: { ...client, [name]: value } }));
   }
 
   onSubmit = (e) => {

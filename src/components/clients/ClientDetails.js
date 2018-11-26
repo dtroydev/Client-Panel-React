@@ -27,12 +27,7 @@ class ClientDetails extends Component {
   }
 
   onBalanceEdit = ({ target: { value: amount } }) => {
-    this.setState(prevState => ({
-      balance: {
-        ...prevState.balance,
-        amount,
-      },
-    }));
+    this.setState(({ balance }) => ({ balance: { ...balance, amount } }));
   }
 
   onBalanceSubmit = (e) => {
@@ -46,23 +41,12 @@ class ClientDetails extends Component {
     const newBalance = parseFloat(amount || originalBalance).toFixed(2);
     const clientUpdate = { balance: newBalance };
     update({ collection, doc }, clientUpdate).then(() => {
-      this.setState(prevState => ({
-        balance: {
-          ...prevState.balance,
-          update: false,
-          amount: '',
-        },
-      }));
+      this.setState(({ balance }) => ({ balance: { ...balance, update: false, amount: '' } }));
     });
   }
 
   toggleBalanceView = () => {
-    this.setState(prevState => ({
-      balance: {
-        ...prevState.balance,
-        update: !prevState.balance.update,
-      },
-    }));
+    this.setState(({ balance }) => ({ balance: { ...balance, update: !balance.update } }));
   }
 
   get client() {

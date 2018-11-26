@@ -19,13 +19,7 @@ class Clients extends Component {
   }
 
   alphabeticToggleHandler = (checked) => {
-    this.setState(prevState => ({
-      ...prevState,
-      sorting: {
-        ...prevState.sorting,
-        alphabeticNames: checked,
-      },
-    }));
+    this.setState(({ sorting }) => ({ sorting: { ...sorting, alphabeticNames: checked } }));
   }
 
   filterHandler = ({ target: { value } }) => {
