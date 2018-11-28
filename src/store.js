@@ -60,12 +60,18 @@ const rootReducer = combineReducers({
 // Initial Redux State
 const initialState = {};
 
-// Redux Store Setup with Firebase Enhances above and with Redux Dev Tools enhancer
+// Redux Store Setup with Firebase Enhancers above
+// and with Redux Dev Tools enhancer if not in production
 
-/* eslint-disable no-underscore-dangle */
-const store = createStoreWithFirebase(rootReducer,
+const params = [
+  rootReducer,
   initialState,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-/* eslint-enable */
+];
 
-export default store;
+if (process.env.NODE_ENV !== 'production') {
+  /* eslint-disable no-underscore-dangle */
+  params.push(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+  /* eslint-enable */
+}
+
+export default createStoreWithFirebase(...params);

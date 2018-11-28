@@ -14,6 +14,11 @@
   <noscript>
     You need to enable JavaScript to run this app.
   </noscript>
+  <% if (process.env.NODE_ENV === 'production') { %>
+  <script>
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__.inject = function () { };
+  </script>
+  <% } %>
   <div id="root"></div>
 </body>
 
