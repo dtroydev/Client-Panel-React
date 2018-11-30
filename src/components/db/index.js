@@ -29,7 +29,7 @@ const mapStateToProps = collection => ({ firestore }) => ({
   },
 });
 
-export default (Wrapped, collection) => compose(
+export default (collection, Wrapped) => compose(
   withFirestore,
   connect(mapStateToProps(collection)),
   wrapWithListener(collection),

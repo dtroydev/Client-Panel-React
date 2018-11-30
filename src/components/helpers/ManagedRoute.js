@@ -9,6 +9,7 @@ class ManagedRoute extends Component {
       component: RoutedComponent,
       authReady,
       authUser,
+      profileReady,
       exact,
       path,
       authorised,
@@ -24,9 +25,8 @@ class ManagedRoute extends Component {
       // advise public routes about logged in status
       return <RoutedComponent isLoggedIn={authUser} {...renderProps} />;
     };
-
     return (
-      authReady
+      authReady && profileReady
         ? <Route
           exact={exact}
           path={path}
@@ -40,6 +40,7 @@ class ManagedRoute extends Component {
 const mapStateToProps = state => ({
   authUser: state.firebase.auth.uid,
   authReady: state.firebase.auth.isLoaded,
+  profileReady: state.firebase.profile.isLoaded,
 });
 
 export default connect(mapStateToProps)(ManagedRoute);

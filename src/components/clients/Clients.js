@@ -89,4 +89,4 @@ class Clients extends Component {
   }
 }
 
-export default withData(Clients, Clients.collection);
+export default withData(Clients.collection, Clients);

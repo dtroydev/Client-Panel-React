@@ -154,4 +154,4 @@ class ClientDetails extends Component {
   }
 }
 
-export default withData(ClientDetails, ClientDetails.collection);
+export default withData(ClientDetails.collection, ClientDetails);

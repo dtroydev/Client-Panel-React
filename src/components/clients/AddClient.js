@@ -2,6 +2,8 @@ import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
 import { withFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 class AddClient extends Component {
   static collection = 'clients';
@@ -25,6 +27,8 @@ class AddClient extends Component {
   }
 
   onSubmit = (e) => {
+    // TODO  Add Input Validation / Sanitisation
+
     e.preventDefault();
     this.submitRef.current.innerHTML = 'Submitting...  <i class="fa fa-spinner fa-spin"></i>';
     this.submitRef.current.setAttribute('disabled', true);
@@ -41,6 +45,8 @@ class AddClient extends Component {
         firstName, lastName, phone, balance, email,
       },
     } = this.state;
+
+    const { balanceOnAdd } = this.props.settings;
 
     return (
       <div>
@@ -116,6 +122,7 @@ class AddClient extends Component {
                   id="balance"
                   onChange={this.onChange}
                   value={balance}
+                  disabled={!balanceOnAdd}
                 />
               </div>
               <div className="form-group">
@@ -131,6 +138,11 @@ class AddClient extends Component {
 
 AddClient.propTypes = {
   firestore: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
 };
 
-export default withFirestore(AddClient);
+const mapStateToProps = state => ({
+  settings: state.firebase.profile.settings,
+});
+
+export default compose(withFirestore, connect(mapStateToProps))(AddClient);

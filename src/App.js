@@ -11,6 +11,7 @@ import AddClient from './components/clients/AddClient';
 import EditClient from './components/clients/EditClient';
 import ClientDetails from './components/clients/ClientDetails';
 import store from './store';
+import Settings from './components/settings/Settings';
 
 export default class App extends Component {
   render() {
@@ -26,6 +27,7 @@ export default class App extends Component {
                 <ManagedRoute authorised exact path="/client/add" component={AddClient} />
                 <ManagedRoute authorised exact path="/client/:id" component={ClientDetails} />
                 <ManagedRoute authorised exact path="/client/edit/:id" component={EditClient} />
+                <ManagedRoute authorised exact path="/settings" component={Settings} />
                 <Route component={Page404} />
               </Switch>
             </div>

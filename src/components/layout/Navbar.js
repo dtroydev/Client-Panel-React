@@ -17,18 +17,27 @@ class Navbar extends Component {
   onLogoutClick = () => {
     this.props.firebase.logout()
       .then(() => {
-        this.collapseRef.current.classList.remove('show');
-        this.props.dispatch({ type: actionTypes.CLEAR_DATA }); // clear firestore redux data
-        this.props.history.push('/login/');
+        this.collapseRef.current.classList.remove('show'); // ensure bootstrap nav dropdown stays closed
+        this.props.dispatch({ type: actionTypes.CLEAR_DATA }); // clear redux firestore data
+        this.props.history.push('/login/'); // go to login page
       });
   }
 
   render() {
     const { collapseRef } = this;
     const { uid: isLoggedIn, email } = this.props.auth;
+    const { settings } = this.props.profile;
+
+    let allowRegistration;
+
+    if (isLoggedIn && settings) {
+      sessionStorage.setItem('allowRegistration', settings.allowRegistration);
+    } else {
+      allowRegistration = JSON.parse(sessionStorage.getItem('allowRegistration'));
+    }
 
     return (
-      <nav className="navbar navbar-expand-md navbar-dark bg-primary mb -4">
+      <nav className="navbar navbar-expand-md navbar-dark bg-primary mb -4" >
         <div className="container">
           <Link to="/" className="navbar-brand">
             Client Panel
@@ -47,17 +56,34 @@ class Navbar extends Component {
                   <li className="nav-item">
                     <Link to="/" className="nav-link">
                       Dashboard
-                </Link>
+                    </Link>
                   </li>
                 </ul>
                 <ul className="navbar-nav ml-auto">
+                  <li className="nav-item navbar-text font-italic">
+                    {email}
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/settings" className="nav-link">
+                      Settings
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link to="#!" className="nav-link" onClick={this.onLogoutClick}>
                       Logout
                     </Link>
                   </li>
-                  <li className="nav-item navbar-text font-italic">
-                    {email}
+                </ul>
+              </Fragment>
+            }
+            {!isLoggedIn
+              && allowRegistration
+              && <Fragment>
+                <ul className="navbar-nav ml-auto">
+                  <li className="nav-item">
+                    <Link to="/register" className="nav-link">
+                      Register
+                    </Link>
                   </li>
                 </ul>
               </Fragment>
@@ -69,8 +95,9 @@ class Navbar extends Component {
   }
 }
 
-const mapStateToProps = ({ firebase: { auth } }) => ({
-  auth,
+const mapStateToProps = state => ({
+  auth: state.firebase.auth,
+  profile: state.firebase.profile,
 });
 
 export default compose(withRouter, withFirebase, connect(mapStateToProps))(Navbar);

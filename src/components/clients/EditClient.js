@@ -1,5 +1,8 @@
 import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import PropTypes from 'prop-types';
 import withData from '../db';
 import Spinner from '../layout/Spinner';
 
@@ -27,6 +30,8 @@ class EditClient extends Component {
   }
 
   onSubmit = (e) => {
+    // TODO  Add Input Validation / Sanitisation
+
     e.preventDefault();
 
     this.submitRef.current.innerHTML = 'Updating...  <i class="fa fa-spinner fa-spin"></i>';
@@ -49,6 +54,9 @@ class EditClient extends Component {
       const {
         firstName, lastName, phone, balance, email,
       } = client;
+
+      const { balanceOnEdit } = this.props.settings;
+
       return (
         <div>
           <div className="row">
@@ -123,6 +131,7 @@ class EditClient extends Component {
                     id="balance"
                     onChange={this.onChange}
                     value={balance}
+                    disabled={!balanceOnEdit}
                   />
                 </div>
                 <div className="form-group">
@@ -140,4 +149,14 @@ class EditClient extends Component {
   }
 }
 
-export default withData(EditClient, EditClient.collection);
+EditClient.propTypes = {
+  firestore: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  settings: state.firebase.profile.settings,
+});
+
+export default compose(withData.bind(this, EditClient.collection),
+  connect(mapStateToProps))(EditClient);

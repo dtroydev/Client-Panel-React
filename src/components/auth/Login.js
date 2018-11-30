@@ -2,10 +2,22 @@ import React, { Component, createRef } from 'react';
 import { withFirebase } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { Alert } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 class Login extends Component {
   static propTypes = {
     firebase: PropTypes.object.isRequired,
+  }
+
+  static defaultUserProfileSettings = {
+    balanceOnAdd: true,
+    balanceOnEdit: false,
+    allowRegistration: false,
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    return state;
   }
 
   constructor(props) {
@@ -36,21 +48,31 @@ class Login extends Component {
       props: {
         history,
         isLoggedIn,
+        profile,
+        firebase,
       },
     } = this;
 
     if (isLoggedIn) {
       formElement.hidden = true;
-      setTimeout(() => { history.push('/'); }, 1000);
+
       this.setState({
         alert: {
           show: true,
           type: 'success',
           heading: '',
-          text: 'You\'re already logged in',
+          text: 'You\'re logged in. Going to Dashboard..',
         },
       });
+
+      if (profile.settings === undefined) {
+        console.log('No user profile settings detected, setting defaults');
+        firebase.updateProfile({ settings: Login.defaultUserProfileSettings });
+      }
+
+      setTimeout(() => { history.push('/'); }, 500);
     }
+
     emailElement.focus();
   }
 
@@ -61,12 +83,10 @@ class Login extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const {
-      formRef: { current: formElement },
       emailRef: { current: emailElement },
       submitRef: { current: submitElement },
       props: {
         firebase,
-        history,
       },
       state: {
         login: {
@@ -83,22 +103,6 @@ class Login extends Component {
     submitElement.setAttribute('disabled', true);
 
     firebase.login({ email, password })
-      .then(() => {
-        this.setState({
-          login: {
-            email: '',
-            password: '',
-          },
-          alert: {
-            show: true,
-            type: 'success',
-            heading: '',
-            text: 'Successful Login',
-          },
-        });
-        formElement.hidden = true;
-        setTimeout(() => { history.push('/'); }, 1000);
-      })
       .catch(() => {
         this.setState({
           login: {
@@ -188,4 +192,9 @@ class Login extends Component {
   }
 }
 
-export default withFirebase(Login);
+const mapStateToProps = state => ({
+  auth: state.firebase.auth,
+  profile: state.firebase.profile,
+});
+
+export default compose(withFirebase, connect(mapStateToProps))(Login);
