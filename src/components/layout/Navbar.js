@@ -31,7 +31,7 @@ class Navbar extends Component {
     let allowRegistration;
 
     if (isLoggedIn && settings) {
-      sessionStorage.setItem('allowRegistration', settings.allowRegistration);
+      sessionStorage.setItem('allowRegistration', settings.allowRegistration.value);
     } else {
       allowRegistration = JSON.parse(sessionStorage.getItem('allowRegistration'));
     }

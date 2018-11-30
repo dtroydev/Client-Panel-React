@@ -131,7 +131,7 @@ class EditClient extends Component {
                     id="balance"
                     onChange={this.onChange}
                     value={balance}
-                    disabled={!balanceOnEdit}
+                    disabled={!balanceOnEdit.value}
                   />
                 </div>
                 <div className="form-group">
@@ -158,5 +158,7 @@ const mapStateToProps = state => ({
   settings: state.firebase.profile.settings,
 });
 
-export default compose(withData.bind(this, EditClient.collection),
-  connect(mapStateToProps))(EditClient);
+export default compose(
+  withData.bind(this, EditClient.collection),
+  connect(mapStateToProps),
+)(EditClient);

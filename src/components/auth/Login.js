@@ -11,9 +11,10 @@ class Login extends Component {
   }
 
   static defaultUserProfileSettings = {
-    balanceOnAdd: true,
-    balanceOnEdit: false,
-    allowRegistration: false,
+    alphabeticNames: { value: false, description: 'Alphabetic Name Default Order' },
+    allowRegistration: { value: false, description: 'Allow New User Registration' },
+    balanceOnAdd: { value: true, description: 'Allow Balance Setting for New Clients' },
+    balanceOnEdit: { value: true, description: 'Allow Balance Setting for Existing Clients' },
   };
 
   static getDerivedStateFromProps(props, state) {

@@ -122,7 +122,7 @@ class AddClient extends Component {
                   id="balance"
                   onChange={this.onChange}
                   value={balance}
-                  disabled={!balanceOnAdd}
+                  disabled={!balanceOnAdd.value}
                 />
               </div>
               <div className="form-group">

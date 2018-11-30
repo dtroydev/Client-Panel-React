@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import arraySort from 'array-sort';
 import escapeRe from 'escape-string-regexp';
 import commaNumber from 'comma-number';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import Spinner from '../layout/Spinner';
 import withData from '../db';
 import ClientsList from './ClientsList';
@@ -14,7 +16,7 @@ class Clients extends Component {
     displayClients: null,
     searchFilter: null,
     sorting: {
-      alphabeticNames: false,
+      alphabeticNames: this.props.settings.alphabeticNames.value,
     },
   }
 
@@ -28,10 +30,6 @@ class Clients extends Component {
 
   static formatBalance(balance) {
     return commaNumber(parseFloat(balance).toFixed(2));
-    // return parseFloat(balance).toLocaleString(undefined, {
-    //   minimumFractionDigits: 2,
-    //   maximumFractionDigits: 2,
-    // });
   }
 
   static getDerivedStateFromProps({ data: { ordered: { clients } } }, state) {
@@ -89,4 +87,11 @@ class Clients extends Component {
   }
 }
 
-export default withData(Clients.collection, Clients);
+const mapStateToProps = state => ({
+  settings: state.firebase.profile.settings,
+});
+
+export default compose(
+  withData.bind(this, Clients.collection),
+  connect(mapStateToProps),
+)(Clients);
