@@ -32,8 +32,15 @@ class Clients extends Component {
     return commaNumber(parseFloat(balance).toFixed(2));
   }
 
-  static getDerivedStateFromProps({ data: { ordered: { clients } } }, state) {
+  static getDerivedStateFromProps({ data: { clients: objClients, ordered: { clients } } }, state) {
     if (clients === undefined) return state;
+
+    // ordered data list sometimes has to catch up to the regular data list after updates
+    // this seems to happen when developer tools are closed and it causes
+    // the recently updated doc to appear by itself in the clients list for a short time
+    // before the entire list loads hence the compare below to delay the display
+    // until everything is ready. The line below fixes that
+    if (clients.length !== Object.keys(objClients).length) return state;
 
     const { sorting: { alphabeticNames }, searchFilter } = state;
 

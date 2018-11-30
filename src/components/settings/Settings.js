@@ -27,13 +27,6 @@ class Settings extends Component {
       },
     } = this;
 
-    // const {
-    //   balanceOnAdd,
-    //   balanceOnEdit,
-    //   allowRegistration,
-    //   alphabeticNames,
-    // } = settings;
-
     const settingsParamsArray = Object.keys(settings).reduce((acc, settingName) => {
       acc.push(
         {
@@ -62,54 +55,6 @@ class Settings extends Component {
                             <Setting {...settingParams} />
                           ))
                         }
-                        {/* <div className="row justify-content-end align-items-center">
-                          <h5>Alphabetic Names</h5>
-                          <div
-                            className="d-inline-block ml-3 text-primary"
-                            onClick={
-                              handleClick.bind(this, 'alphabeticNames')
-                            }
-                          > {
-                              alphabeticNames.value
-                                ? <i className="far fa-check-square fa-2x"></i>
-                                : <i className="far fa-square fa-2x"></i>
-                            }</div>
-                        </div>
-                        <div className="row justify-content-end align-items-center">
-                          <h5>Balance On Add</h5>
-                          <div
-                            className="d-inline-block ml-3 text-primary"
-                            onClick={handleClick.bind(this, 'balanceOnAdd')}
-                          >{
-                              balanceOnAdd.value
-                                ? <i className="far fa-check-square fa-2x"></i>
-                                : <i className="far fa-square fa-2x"></i>
-                            }</div>
-                        </div>
-                        <div className="row justify-content-end align-items-center">
-                          <h5>Balance On Edit</h5>
-                          <div
-                            className="d-inline-block ml-3 text-primary"
-                            onClick={handleClick.bind(this, 'balanceOnEdit')}
-                          >{
-                              balanceOnEdit.value
-                                ? <i className="far fa-check-square fa-2x"></i>
-                                : <i className="far fa-square fa-2x"></i>
-                            }</div>
-                        </div>
-                        <div className="row justify-content-end align-items-center">
-                          <h5>Allow Registration</h5>
-                          <div
-                            className="d-inline-block ml-3 text-primary"
-                            onClick={
-                              handleClick.bind(this, 'allowRegistration')
-                            }
-                          > {
-                              allowRegistration.value
-                                ? <i className="far fa-check-square fa-2x"></i>
-                                : <i className="far fa-square fa-2x"></i>
-                            }</div>
-                        </div> */}
                       </div>
                       <div className="col-lg-3 col-md-1 col-sm-0 col-0"></div>
                     </div>
