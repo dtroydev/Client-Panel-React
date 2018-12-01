@@ -73,6 +73,8 @@ const params = [
   initialState,
 ];
 
+console.log('Environment:', process.env.NODE_ENV);
+
 if (process.env.NODE_ENV !== 'production') {
   /* eslint-disable no-underscore-dangle */
   params.push(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
