@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { defaultUserProfile } from './Config';
 
 export class Login extends Component {
   // static contextTypes = {
@@ -12,17 +13,6 @@ export class Login extends Component {
 
   static propTypes = {
     firebase: PropTypes.object.isRequired,
-  }
-
-  static defaultUserProfileSettings = {
-    alphabeticNames: { value: false, description: 'Alphabetic Name Default Order' },
-    allowRegistration: { value: false, description: 'Allow New User Registration' },
-    balanceOnAdd: { value: true, description: 'Allow Balance Setting for New Clients' },
-    balanceOnEdit: { value: true, description: 'Allow Balance Setting for Existing Clients' },
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    return state;
   }
 
   constructor(props) {
@@ -71,8 +61,8 @@ export class Login extends Component {
       });
 
       if (profile.settings === undefined) {
-        console.log('No user profile settings detected, setting defaults');
-        firebase.updateProfile({ settings: Login.defaultUserProfileSettings });
+        console.log('No user profile detected. Profile will be initialised with default settings');
+        firebase.updateProfile(defaultUserProfile);
       }
 
       setTimeout(() => { history.push('/'); }, 500);
@@ -148,7 +138,7 @@ export class Login extends Component {
 
     return (
       <div className="row">
-        <div className="col-md-6 mx-auto pt-3">
+        <div className="col-md-8 col-lg-6 mx-auto pt-3">
           <div className="card">
             <div className="card-body">
               <h1 className="text-center pb-4 pt-3">

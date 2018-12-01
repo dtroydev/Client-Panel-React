@@ -25,8 +25,8 @@ class Navbar extends Component {
 
   render() {
     const { collapseRef } = this;
-    const { uid: isLoggedIn, email } = this.props.auth;
-    const { settings } = this.props.profile;
+    const { uid: isLoggedIn } = this.props.auth;
+    const { info, settings } = this.props.profile;
 
     let allowRegistration;
 
@@ -35,6 +35,13 @@ class Navbar extends Component {
     } else {
       allowRegistration = JSON.parse(sessionStorage.getItem('allowRegistration'));
     }
+
+    const greeting = () => {
+      if (info && info.firstName) {
+        return `Welcome ${info.firstName}`;
+      }
+      return '';
+    };
 
     return (
       <nav className="navbar navbar-expand-md navbar-dark bg-primary mb -4" >
@@ -61,7 +68,7 @@ class Navbar extends Component {
                 </ul>
                 <ul className="navbar-nav ml-auto">
                   <li className="nav-item navbar-text font-italic">
-                    {email}
+                    {greeting()}
                   </li>
                   <li className="nav-item">
                     <Link to="/settings" className="nav-link">
@@ -76,18 +83,25 @@ class Navbar extends Component {
                 </ul>
               </Fragment>
             }
-            {!isLoggedIn
-              && allowRegistration
-              && <Fragment>
-                <ul className="navbar-nav ml-auto">
-                  <li className="nav-item">
+            <div className="ml-auto">
+              <ul className="navbar-nav">
+                {!isLoggedIn
+                  && allowRegistration
+                  && <li className="nav-item">
                     <Link to="/register" className="nav-link">
                       Register
                     </Link>
                   </li>
-                </ul>
-              </Fragment>
-            }
+                }
+                {!isLoggedIn
+                  && <li className="nav-item">
+                    <Link to="/" className="nav-link">
+                      Login
+                    </Link>
+                  </li>
+                }
+              </ul>
+            </div>
           </div>
         </div>
       </nav >
