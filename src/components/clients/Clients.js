@@ -32,15 +32,34 @@ class Clients extends Component {
     return commaNumber(parseFloat(balance).toFixed(2));
   }
 
-  static getDerivedStateFromProps({ data: { clients: objClients, ordered: { clients } } }, state) {
-    if (clients === undefined) return state;
+  static getDerivedStateFromProps(
+    { data: {
+      clients: unOrderedClients,
+      ordered: { clients: orderedClients },
+    } },
+    state
+  ) {
 
-    // ordered data list sometimes has to catch up to the regular data list after updates
-    // this seems to happen when developer tools are closed and it causes
-    // the recently updated doc to appear by itself in the clients list for a short time
-    // before the entire list loads hence the compare below to delay the display
-    // until everything is ready. The line below fixes that
-    if (clients.length !== Object.keys(objClients).length) return state;
+    // data not ready, keep waiting
+    if (orderedClients === undefined) return state;
+
+    // Couple of data set issues that required resolution:
+    // 1) ordered client list length is sometimes temporarily set to 1 after client edit submission
+    //    this seems to happen more often when developer tools are closed (ie. normal use) and it causes
+    //    the recently updated client to appear on its own briefly before the full list comes in.
+    //    to fix this this flash of a single client issue, we wait until ordered and unordered list 
+    //    lengths are equal
+    // 2) unordered data list marks a newly deleted client as a null rather than removing the entire key
+    //    to fix this, keys set to null must not be counted below
+
+
+    const unOrderedClientsNoNullLength = Object.keys(unOrderedClients)
+      .reduce((a, e) => {
+        a += unOrderedClients[e] !== null ? 1 : 0;
+        return a
+      }, 0);
+
+    if (orderedClients.length !== unOrderedClientsNoNullLength) return state;
 
     const { sorting: { alphabeticNames }, searchFilter } = state;
 
@@ -49,7 +68,7 @@ class Clients extends Component {
 
     if (searchFilter) {
       const searchRe = RegExp(`${escapeRe(searchFilter).trim()}`, 'i');
-      filteredClients = clients.filter(({ firstName, lastName, email }) => (
+      filteredClients = orderedClients.filter(({ firstName, lastName, email }) => (
         firstName.match(searchRe) || lastName.match(searchRe) || email.match(searchRe)
       ));
     }
@@ -57,9 +76,9 @@ class Clients extends Component {
     // arraySort mutates, we do not want to mutate clients in props
     // (which are mapped from redux in withData HOC)
     if (alphabeticNames) {
-      displayClients = arraySort(filteredClients || clients.slice(0), ['firstName', 'lastName']);
+      displayClients = arraySort(filteredClients || orderedClients.slice(0), ['firstName', 'lastName']);
     } else {
-      displayClients = filteredClients || clients;
+      displayClients = filteredClients || orderedClients;
     }
 
     const totalOwed = Clients.formatBalance(
