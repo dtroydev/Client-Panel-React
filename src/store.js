@@ -34,7 +34,12 @@ firebase.initializeApp(firebaseConfig);
 firebase.firestore().settings(firestoreConfig);
 
 // Firebase Auth Initialisation
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
+if (process.env.NODE_ENV === 'test') {
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+} else {
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+}
 
 // Firebase Auth Listener (TESTING)
 firebase.auth().onAuthStateChanged((user) => {
