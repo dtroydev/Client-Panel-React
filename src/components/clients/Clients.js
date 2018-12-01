@@ -32,32 +32,23 @@ class Clients extends Component {
     return commaNumber(parseFloat(balance).toFixed(2));
   }
 
-  static getDerivedStateFromProps(
-    { data: {
-      clients: unOrderedClients,
-      ordered: { clients: orderedClients },
-    } },
-    state
-  ) {
-
+  static getDerivedStateFromProps({
+    data: { clients: unOrderedClients, ordered: { clients: orderedClients } },
+  }, state) {
     // data not ready, keep waiting
     if (orderedClients === undefined) return state;
 
     // Couple of data set issues that required resolution:
-    // 1) ordered client list length is sometimes temporarily set to 1 after client edit submission
-    //    this seems to happen more often when developer tools are closed (ie. normal use) and it causes
-    //    the recently updated client to appear on its own briefly before the full list comes in.
-    //    to fix this this flash of a single client issue, we wait until ordered and unordered list 
-    //    lengths are equal
-    // 2) unordered data list marks a newly deleted client as a null rather than removing the entire key
-    //    to fix this, keys set to null must not be counted below
-
+    // 1) ordered client list length is sometimes temporarily set to 1 after client edit
+    //    submission. This seems to happen more often when developer tools are closed
+    //    (ie. normal use) and it causes the recently updated client to appear on its own
+    //    briefly before the full list comes in. To fix this this flash of a single client
+    //    issue, we wait until ordered and unordered list lengths are equal.
+    // 2) unordered data list marks a newly deleted client as a null rather than removing
+    //    the entire key. To fix this, keys set to null must not be counted below
 
     const unOrderedClientsNoNullLength = Object.keys(unOrderedClients)
-      .reduce((a, e) => {
-        a += unOrderedClients[e] !== null ? 1 : 0;
-        return a
-      }, 0);
+      .reduce((a, e) => (a + (unOrderedClients[e] !== null ? 1 : 0)), 0);
 
     if (orderedClients.length !== unOrderedClientsNoNullLength) return state;
 
