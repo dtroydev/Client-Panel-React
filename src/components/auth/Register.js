@@ -29,6 +29,11 @@ class Register extends Component {
     };
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (!JSON.parse(sessionStorage.getItem('allowRegistration'))) props.history.push('/login');
+    return state;
+  }
+
   componentDidMount() {
     const {
       formRef: { current: formElement },
