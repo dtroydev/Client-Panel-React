@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import commaNumber from 'comma-number';
 import Spinner from '../layout/Spinner';
 import withData from '../db';
 
@@ -57,10 +58,7 @@ class ClientDetails extends Component {
   }
 
   static formatBalance(balance) {
-    return parseFloat(balance).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    return commaNumber(parseFloat(balance).toFixed(2));
   }
 
   render() {
