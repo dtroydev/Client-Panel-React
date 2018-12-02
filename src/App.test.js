@@ -1,13 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { render, cleanup, fireEvent } from 'react-testing-library';
+import { withFirebase } from 'react-redux-firebase';
+import { compose } from 'redux';
 import { Provider } from 'react-redux';
+import sinon from 'sinon';
 import App from './App';
-
 import { Login } from './components/auth/Login';
 import store from './store';
 
 afterEach(cleanup);
+
+// let firebaseMock;
+// const withFirebaseMock = (Component) => {
+//   firebaseMock = {
+//     login: jest.fn(
+//       ({ email, password }) => {
+//         if (email === 'user@example.org' && password === 'correctpassword') {
+//           return Promise.resolve('OK');
+//         }
+//         return Promise.reject(new Error('ERROR'));
+//       },
+//     ),
+//   };
+//   return <Component firebase={firebaseMock} />;
+// };
+
+let firebaseSpy;
+const withFirebaseSpy = (Component) => {
+  const withProvider = Wrapped => props => (
+    <Provider store={store}>
+      <Wrapped {...props} />
+    </Provider>);
+
+  const withFirebaseSpyWrapper = Wrapped => (props) => {
+    firebaseSpy = sinon.spy(props.firebase, 'login');
+    return <Wrapped {...props} />;
+  };
+
+  const Packed = compose(withProvider, withFirebase, withFirebaseSpyWrapper)(Component);
+  return <Packed />;
+};
 
 describe('App Render Test', () => {
   it('renders without crashing', () => {
@@ -18,42 +51,17 @@ describe('App Render Test', () => {
 });
 
 describe('Authentication Tests', () => {
-  const firebase = {
-    login: jest.fn(
-      ({ email, password }) => {
-        if (email === 'user@example.org' && password === 'correctpassword') return Promise.resolve('OK');
-        return Promise.reject(new Error('ERROR'));
-      },
-    ),
-  };
-
-  // Provide Redux store to tested components
-  const reduxWrap = Component => (
-    <Provider store={store}><Component firebase={firebase} /></Provider>
-  );
-
   it('Submission of Correct Authentication', () => {
-    const { getByLabelText, getByTestId } = render(reduxWrap(Login));
+    // const { getByLabelText, getByTestId } = render(withFirebaseMock(Login));
+    const { getByLabelText, getByTestId } = render(withFirebaseSpy(Login));
     const inputEmail = getByLabelText('Email');
     const inputPassword = getByLabelText('Password');
     const inputSubmit = getByTestId('submit');
     fireEvent.change(inputEmail, { target: { value: 'user@example.org' } });
     fireEvent.change(inputPassword, { target: { value: 'correctpassword' } });
     fireEvent.click(inputSubmit);
-    expect(firebase.login.mock.results[0].value).resolves.toEqual('OK');
-  });
-
-  it('Submission of Incorrect Authentication', () => {
-    const { getByLabelText, getByTestId } = render(reduxWrap(Login));
-    const inputEmail = getByLabelText('Email');
-    const inputPassword = getByLabelText('Password');
-    const inputSubmit = getByTestId('submit');
-    fireEvent.change(inputEmail, { target: { value: 'user@example.org' } });
-    fireEvent.change(inputPassword, { target: { value: 'wrongpassword' } });
-    fireEvent.click(inputSubmit);
-    expect(firebase.login.mock.results[1].value).rejects
-      .toMatchObject({
-        message: 'ERROR',
-      });
+    expect(firebaseSpy.args).toEqual([[{ email: 'user@example.org', password: 'correctpassword' }]]);
+    expect(firebaseSpy.calledOnce).toBe(true);
+    firebaseSpy.restore();
   });
 });

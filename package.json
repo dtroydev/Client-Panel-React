@@ -40,6 +40,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-html": "^5.0.0",
     "javascript-obfuscator": "^0.18.1",
-    "react-testing-library": "^5.3.1"
+    "react-testing-library": "^5.3.1",
+    "sinon": "^7.1.1"
   }
 }
