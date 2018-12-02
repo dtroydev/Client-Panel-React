@@ -1,6 +1,5 @@
 {
   "extends": ["react-app", "airbnb-base"],
-  "parser": "babel-eslint",
   "settings": {
     "import/resolver": {
       "node": {
@@ -17,6 +16,7 @@
   "rules": {
     "no-console": "off",
     "no-debugger": "off",
+    "import/no-named-as-default": "off",
     "newline-per-chained-call": [
       "error", {
         "ignoreChainWithDepth": 2

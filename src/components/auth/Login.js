@@ -5,7 +5,11 @@ import { Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-class Login extends Component {
+export class Login extends Component {
+  // static contextTypes = {
+  //   store: PropTypes.object.isRequired,
+  // }
+
   static propTypes = {
     firebase: PropTypes.object.isRequired,
   }
@@ -102,7 +106,6 @@ class Login extends Component {
     });
 
     submitElement.setAttribute('disabled', true);
-
     firebase.login({ email, password })
       .catch(() => {
         this.setState({
@@ -126,6 +129,7 @@ class Login extends Component {
   }
 
   render() {
+    // console.log('context store', this.context.store.getState());
     const {
       formRef,
       emailRef,
@@ -148,10 +152,10 @@ class Login extends Component {
           <div className="card">
             <div className="card-body">
               <h1 className="text-center pb-4 pt-3">
-                <span className="text-primary"><i className="fas fa-lock"></i> Login</span>
+                <span className="text-primary"><i className="fas fa-lock"></i>{' '}Login</span>
               </h1>
               {alert.show
-                && <Alert bsStyle={alert.type}>
+                && <Alert data-testid="alert" bsStyle={alert.type}>
                   <h4>{alert.heading}</h4>
                   <p>{alert.text}</p>
                 </Alert>
@@ -183,6 +187,7 @@ class Login extends Component {
                 <button type="submit"
                   className="btn btn-primary btn-block"
                   ref={submitRef}
+                  data-testid="submit"
                 >{submit.text}</button>
               </form>
             </div>

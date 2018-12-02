@@ -75,7 +75,7 @@ const params = [
 
 console.log('Environment:', process.env.NODE_ENV);
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   /* eslint-disable no-underscore-dangle */
   params.push(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
   /* eslint-enable */

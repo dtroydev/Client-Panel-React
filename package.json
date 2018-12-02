@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "postbuild": "./postbuild.sh",
-    "test": "react-scripts test",
+    "test": "react-scripts test --verbose=false",
     "eject": "react-scripts eject"
   },
   "browserslist": [
@@ -39,6 +39,7 @@
   "devDependencies": {
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-html": "^5.0.0",
-    "javascript-obfuscator": "^0.18.1"
+    "javascript-obfuscator": "^0.18.1",
+    "react-testing-library": "^5.3.1"
   }
 }
