@@ -60,7 +60,7 @@ class EditClient extends Component {
       return (
         <div>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6 mt-4 mb-3">
               <Link to="/" className="btn btn-link">
                 <i className="fas fa-arrow-circle-left"></i>
                 Back to Dashboard
